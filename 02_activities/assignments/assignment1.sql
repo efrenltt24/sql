@@ -182,3 +182,4 @@ GROUP BY customer_id;
 
 
 
+---assignment 1 finished
