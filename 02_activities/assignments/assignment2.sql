@@ -117,6 +117,7 @@ to create "best day" and "worst day";
 
 
 
+	
 WITH sales AS 
 	(SELECT 
 		market_date,
@@ -165,33 +166,23 @@ Think a bit about the row counts: how many distinct vendors, product names are t
 How many customers are there (y). 
 Before your final group by you should have the product of those two queries (x*y).  */
 
+SELECT *, 
+	(product_query.items_allowed_per_cx * product_query.original_price * customer_query.total_customers) AS total_value
+FROM
+(SELECT DISTINCT
+    (SELECT vendor_name FROM vendor WHERE vendor.vendor_id = vendor_inventory.vendor_id) AS vendor_name,
+    (SELECT product_name FROM product WHERE product.product_id = vendor_inventory.product_id) AS product_name,
+    5 AS items_allowed_per_cx,
+    original_price
+FROM vendor_inventory) as product_query
 
-DROP TABLE IF EXISTS temp.vendor_inv;
 
-CREATE TEMP TABLE temp.vendor_inv AS
-SELECT DISTINCT
-    vendor_id,
-    product_id,
-    original_price,
-    (original_price * 5) AS priceperfive
-FROM vendor_inventory;
+CROSS JOIN
 
--- Count total customers
-WITH customer_count AS (
-    SELECT COUNT(customer_id) AS total_customers
-    FROM customer
-)
 
-SELECT 
-    v.vendor_name,
-    p.product_name,
-    vi.priceperfive,
-    (cc.total_customers * vi.priceperfive) AS total_per_product
-FROM vendor AS v
-CROSS JOIN temp.vendor_inv AS vi
-JOIN product AS p ON vi.product_id = p.product_id
-CROSS JOIN customer_count AS cc 
-ORDER BY v.vendor_name, p.product_name;
+(SELECT COUNT(customer_id) AS total_customers FROM customer) as customer_query;
+
+
 
 
 -- INSERT
