@@ -54,7 +54,10 @@ The store wants to keep customer addresses. Propose two architectures for the CU
 **HINT:** search type 1 vs type 2 slowly changing dimensions. 
 
 ```
-Your answer...
+1.customer_adress table- will overwrite : a table can be created with the next columns: customer_id, address, city, country. every time new info needs to be changed, such changes will override the info in the table. (new address is stored, and old address is replaced)
+
+2.customer_adress table- will keep historical records: a table can be created with the next columns: customer_id, address, city, country. in this table two extra columns will be added: start_date and end_date. a new row is inserted every time there is an address change. end_date will point out when old address became inactive.
+
 ```
 
 ***
